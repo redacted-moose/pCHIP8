@@ -32,7 +32,7 @@ What is this?
 ====================================================================================
 How to use
 
-	A simple 'make' will do (provided you have the corrected toolchain installed)
+	To build, a simple 'make' will do (provided you have the corrected toolchain installed)
 	
 	Then just send pCHIP8.g3a and whichever rom.c8 you choose to the root directory
 	of your PRIZM.
