@@ -29,8 +29,7 @@
   return ((x & 1) ? (*p & 0x0F) : (*p >> 4));
 }*/
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 
 	unsigned char filename[] = {'\\','\\','f','l','s','0','\\','r','o','m','.','c','8'};
 	short unsigned int dest[26];
@@ -41,18 +40,16 @@ int main(int argc, char **argv)
 	Bfile_StrToName_ncpy(dest, filename, 13);
 	rom = Bfile_OpenFile_OS(dest, 0);
 
-	if (rom < 0)
-		{
-			//printf("Failed to open rom image - check if it exists...\n");
-			return -1;
-		}
+	if (rom < 0) {
+        //printf("Failed to open rom image - check if it exists...\n");
+        return -1;
+	}
 
 	chip = initializeCHIP8();
 
 	Bfile_CloseFile_OS(rom);
 
-	do
-	{
+	do {
 		//printf("Starting loop\n");
 		//printf("PC = 0x%X\n", chip->pc);
 		//printf("Opcode = 0x%X\n", chip->opcode);
@@ -62,16 +59,13 @@ int main(int argc, char **argv)
 
 		//printf("Is drawflag set?\n");
 
-		if (chip->drawflag)
-		{
+		if (chip->drawflag) {
 			//printf("true\n");
 
-			for(int row = 0; row < 32; row++)
-			{
-				for(int col = 0; col < 64; col++)
-				{
-					for(int rowoffs = 0; rowoffs < 6; rowoffs++){
-						for(int coloffs = 0; coloffs < 6; coloffs++){
+			for (int row = 0; row < 32; row++) {
+				for (int col = 0; col < 64; col++) {
+					for (int rowoffs = 0; rowoffs < 6; rowoffs++) {
+						for (int coloffs = 0; coloffs < 6; coloffs++) {
 							Bdisp_SetPoint_VRAM(6*col + coloffs, 6*row + rowoffs, (0x0F * (chip->LCD[64*row + col])) ^ 0x0F);
 						}
 					}
@@ -85,7 +79,7 @@ int main(int argc, char **argv)
 		//printf("false\nChecking for pressed keys...\n");
 		setKeys(chip);
 		//printf("Time to start over!\n");
-	}while(!isKeyPressed(KEY_PRIZM_MENU));
+	} while (!isKeyPressed(KEY_PRIZM_MENU));
 
 	destroy(chip);
 

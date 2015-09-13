@@ -4,7 +4,7 @@
  *  Created on: May 11, 2012
  *      Author: Mighty Moose
  */
-//#include "os.h"
+
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
@@ -31,8 +31,7 @@
 #define KEY_PRIZM_EXP 51
 #define KEY_PRIZM_NEGATIVE 41
 
-chip8* initializeCHIP8()
-{
+chip8* initializeCHIP8() {
 	int size;
 
 	//chip8 *ctx = (chip8 *)calloc(1, sizeof(chip8));
@@ -80,17 +79,14 @@ chip8* initializeCHIP8()
 	return ctx;
 }
 
-void emulateCycle(chip8 *ctx)
-{
+void emulateCycle(chip8 *ctx) {
 	ctx->opcode = ctx->memory[ctx->pc] << 8 | ctx->memory[ctx->pc + 1];
 
 	//printf("Opcode = %X", ctx->opcode);
 
-	switch (ctx->opcode & 0xF000)
-	{
+	switch (ctx->opcode & 0xF000) {
 		case 0x0000:
-			switch (ctx->opcode & 0x000F)
-			{
+			switch (ctx->opcode & 0x000F) {
 				case 0x0000: // 0x00E0: Clears the screen
 					//printf("0x00E0: Clear screen\n");
 					memset(ctx->LCD, 0, 32*64);
@@ -153,8 +149,7 @@ void emulateCycle(chip8 *ctx)
 		break;
 
 		case 0x8000:
-			switch (ctx->opcode & 0x000F)
-			{
+			switch (ctx->opcode & 0x000F) {
 				case 0x0000:
 					ctx->V[(ctx->opcode & 0x0F00) >> 8] = ctx->V[(ctx->opcode & 0x00F0) >> 4];
 					ctx->pc += 2;
@@ -247,13 +242,10 @@ void emulateCycle(chip8 *ctx)
 			height = (ctx->opcode) & 0x000F;
 
 			ctx->V[0xF] = 0;
-			for(int yline = 0; yline < height; yline++)
-			{
+			for (int yline = 0; yline < height; yline++) {
 				pixel = ctx->memory[ctx->I + yline];
-				for(int xline = 0; xline < 8; xline++)
-				{
-					if (pixel & (0x80 >> xline))
-					{
+				for (int xline = 0; xline < 8; xline++) {
+					if (pixel & (0x80 >> xline)) {
 						if (ctx->LCD[(x + xline +((y + yline) * 64))] == 1)
 							ctx->V[0xF] = 1;
 						ctx->LCD[x + xline + ((y + yline) * 64)] ^= 1;
@@ -266,8 +258,7 @@ void emulateCycle(chip8 *ctx)
 		break;
 
 		case 0xE000:
-			switch (ctx->opcode & 0x00FF)
-			{
+			switch (ctx->opcode & 0x00FF) {
 				case 0x009E:
 					if (ctx->key[ctx->V[(ctx->opcode & 0x0F00) >> 8]] != 0)
 						ctx->pc += 2;
@@ -287,8 +278,7 @@ void emulateCycle(chip8 *ctx)
 		break;
 
 		case 0xF000:
-			switch (ctx->opcode & 0x00FF)
-			{
+			switch (ctx->opcode & 0x00FF) {
 				case 0x0007:
 					ctx->V[(ctx->opcode & 0x0F00) >> 8] = ctx->delay_timer;
 					ctx->pc += 2;
@@ -297,10 +287,8 @@ void emulateCycle(chip8 *ctx)
 				case 0x000A:
 					keyPress = false;
 
-					for(int i = 0; i < 16; ++i)
-					{
-						if (ctx->key[i])
-						{
+					for (int i = 0; i < 16; ++i) {
+						if (ctx->key[i]) {
 							ctx->V[(ctx->opcode & 0x0F00) >> 8] = i;
 							keyPress = true;
 						}
@@ -352,7 +340,7 @@ void emulateCycle(chip8 *ctx)
 				break;
 
 				case 0x0065:
-					for(int i = 0; i < ((ctx->opcode & 0x0F00) >> 8); ++i)
+					for (int i = 0; i < ((ctx->opcode & 0x0F00) >> 8); ++i)
 						ctx->V[i] = ctx->memory[ctx->I + i];
 
 					ctx->I += ((ctx->opcode & 0x0F00) >> 8) + 1;
@@ -373,27 +361,23 @@ void emulateCycle(chip8 *ctx)
 	if (ctx->delay_timer > 0) //Optimization: if (delay_timer)
 		--(ctx->delay_timer);
 
-	if (ctx->sound_timer > 0)
-	{
+	if (ctx->sound_timer > 0) {
 		if (ctx->sound_timer == 1)
-			//printf("BEEP!"); //To be implemented later
+			printf("BEEP!"); //To be implemented later
 		--(ctx->sound_timer);
 	}
 }
 
-bool anyKeyPressed(chip8 *ctx)
-{
+bool anyKeyPressed(chip8 *ctx) {
 	setKeys(ctx);
-	for(int i = 0; i < 16; i++)
-	{
+	for (int i = 0; i < 16; i++) {
 		if (ctx->key[i])
 			return ctx->key[i];
 	}
 	return 0;
 }
 
-void setKeys(chip8 *ctx)
-{
+void setKeys(chip8 *ctx) {
 	/*if (isKeyPressed(KEY_NSPIRE_7))
 		ctx->key[0x1] = TRUE;
 	if (isKeyPressed(KEY_NSPIRE_8))
@@ -445,8 +429,7 @@ void setKeys(chip8 *ctx)
 	ctx->key[0xF] = (isKeyPressed(KEY_PRIZM_NEGATIVE))? true: false;
 }
 
-void destroy(chip8 *ctx)
-{
+void destroy(chip8 *ctx) {
 	free(ctx->memory);
 	free(ctx->LCD);
 	free(ctx->V);
@@ -454,8 +437,7 @@ void destroy(chip8 *ctx)
 	free(ctx->stack);
 }
 
-byte chip8_fontset[80] =
-{
+byte chip8_fontset[80] = {
 	0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 	0x20, 0x60, 0x20, 0x20, 0x70, // 1
 	0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -474,8 +456,8 @@ byte chip8_fontset[80] =
 	0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-int isKeyPressed(int basic_keycode) //Thanks PierrotLL!
-{
+// Thanks PierrotLL!
+int isKeyPressed(int basic_keycode) {
 	const unsigned short* keyboard_register = (unsigned short*)0xA44B0000;
 	int row, col, word, bit;
 	row = basic_keycode%10;
