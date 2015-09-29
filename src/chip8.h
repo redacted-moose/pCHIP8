@@ -8,45 +8,20 @@
 #ifndef CHIP8_H_
 #define CHIP8_H_
 
-#include "stdio.h"
-#include "string.h"
-#include "stdlib.h"
+#include <stdint.h>
+#include "SDL/SDL.h"
 
-typedef unsigned char byte;
-typedef unsigned short word;
+typedef uint8_t byte;
+typedef uint16_t word;
 typedef enum {false, true} bool;
 
-typedef struct {
-	byte delay_timer;
-	byte sound_timer;
-	byte* key;
-	byte* LCD;
-	byte* memory;
-	byte* V;
+extern SDL_Surface* screen;
+extern bool run;
 
-	word I;
-	word opcode;
-	word pc;
-	word sp;
-	word* stack;
+#define GPU_SCREEN_HEIGHT 32
+#define GPU_SCREEN_WIDTH 64
 
-	bool drawflag;
-} chip8;
-
-extern chip8* initializeCHIP8();
-extern void emulateCycle(chip8 *ctx);
-extern void setKeys(chip8 *ctx);
-extern bool anyKeyPressed(chip8 *ctx);
-extern void destroy(chip8 *ctx);
-int isKeyPressed(int basic_keycode);
-
-bool keyPress;
-byte x;
-byte y;
-word height;
-word pixel;
-bool key;
-
-extern byte chip8_fontset[80];
+extern void set_pixel(int x, int y, Uint32 color);
+extern Uint32 get_pixel(int x, int y);
 
 #endif /* CHIP8_H_ */
